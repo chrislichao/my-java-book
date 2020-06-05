@@ -1,4 +1,4 @@
-# SpringCloud相关
+# SpringCloud相关开源项目
 
 - 1，awesome-spring-cloud
   - [项目地址](https://github.com/ityouknow/awesome-spring-cloud)
