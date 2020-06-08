@@ -1,12 +1,36 @@
 # Git
 ##### 1，配置Git开发环境
+- 1-1 Windows环境
+  - 1-1-1，下载Git客户端压缩包
+    - [官网下载地址](https://git-scm.com/)
+  - 1-1-2，安装
+    - 安装完成，输入`$ git`检查是否安装完成
+  - 1-1-3，配置环境变量
+    - 新建一个GIT_HOME的环境变量，值为C:\MySoft\Git
+    - 修改path值，增加%GIT_HOME%\bin;
+- 1-2 Linux环境
+  ```
+  # 下载后拷贝到服务器并解压
+  cd /data/java/git
+  tar -zxvf git-2.14.1.tar.gz
+  
+  # 新增一个git文件夹
+  /data/git
+  
+  # 切换到git解压文件夹中
+  cd /data/java/git/git-2.14.1
+  
+  # 配置git安装路径
+  ./configure prefix=/data/git/
+  ```
 ---
 ##### 2，Git常用命令
 - 2-1，相关名词
   - 2-1-1，master：默认开发分支
   - 2-1-2，origin：默认远程版本库
+  - 2-1-3，.git文件夹：版本库，其中有个stage的暂存区，git为我们自动创建一个master分支，以及指向master的一个指针叫HEAD
   - 2-1-3，Index/Stage：暂存区
-  - 2-1-4，Workspace：工作区
+  - 2-1-4，Workspace：工作区，文件夹是一个工作区
   - 2-1-5，Repository：仓库区（或本地仓库）
   - 2-1-6，Remote：远程仓库
 - 2-2，新建代码库
@@ -297,3 +321,49 @@ $ git stash pop
 ```
 $ git archive
 ```
+---
+##### 3，常用的操作
+- 3-1 撤销对工作区中文件的修改
+  - 3-1-1 修改，但没有使用git add将修改添加到暂存区
+  ```
+  $ git checkout --文件
+  # 本地所有修改，没有提交的都返回到原来的状态
+  $ git checkout .
+  # 将所有没提交的修改暂存到stash中，可用git stash pop恢复
+  $ git stash
+  ```
+  - 3-1-2 修改，已经使用git add将修改添加到暂存区
+  ```
+  # 先撤销缓存区的修改，再撤销工作区修改
+  $ git reset HEAD --文件
+  $ git checkout --文件
+  # 返回到某个节点，不保留修改
+  $ git reset --hard HEAD
+  # 返回到某个节点，保留修改
+  $ git reset --soft HEAD
+  ```
+  - 3-1-3 修改，已经使用git add将修改添加到暂存区，并再次进行修改
+  ```
+  # 先撤销工作区修改，再撤销缓存区的修改，再撤销工作区修改
+  $ git checkout --文件
+  $ git reset HEAD --文件
+  $ git checkout --文件
+  ```
+  - 总结：`$ git checkout --文件`撤销工作区文件修改，`$ git reset HEAD --文件`撤销暂存区中文件的修改
+- 3-2 撤销commit但没有push的代码
+  ```
+  # 找到之前提交的git commit的id
+  $ git log
+  
+  # 完成撤销，同时将代码恢复到此commit id对于的版本
+  $ git reset --hard [commit-id]
+  
+  # 完成撤销，停留在当前版本，不对代码修改进行撤销，可用直接commit或者重新修改代码
+  $ git reset [commit-id]
+  ```
+- 3-3 修改.gitignore文件后，重新追踪文件
+  ```
+  $ git rm -r --cached .
+  $ git add .
+  $ git commit -m 'update .gitignore'
+  ```
