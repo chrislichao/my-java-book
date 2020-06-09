@@ -15,6 +15,7 @@
   * [Git](JavaEnv/Git.md)
   * [Maven](JavaEnv/Maven.md)
 * [Java基础](JavaFoundation/README.md)
+  * [命名规范](JavaFoundation/Naming.md)
 * [工具使用](Tools/README.md)
   * [GitBook](Tools/GitBook.md)
 * [开源项目](OpenSourceProject/README.md)
