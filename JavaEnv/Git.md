@@ -188,6 +188,9 @@ $ git log
 # 显示commit历史以及每次commit发生变更的文件
 $ git log --stat
 
+# 只输出commit id和commit info
+$ git log --oneline
+
 # 根据关键字搜索提交历史
 $ git log -S [keyword]
 
@@ -274,8 +277,18 @@ $ git push --tags
 ```
 - 2-10，撤销
 ```
-# 撤销工作目录中所有未提交文件的修改内容
+# 回退到当前版本
 $ git reset --hard HEAD
+
+# 回退到上一个版本
+$ git reset --hard HEAD^
+
+# 回退到上上个版本
+$ git reset --hard HEAD^^
+$ git reset --hard HEAD~2
+
+# 回退到某个版本
+$ git reset --hard <commit id>
 
 # 撤销指定的未提交文件的修改内容
 $ git checkout HEAD <file>
@@ -322,9 +335,19 @@ $ git stash pop
 $ git archive
 ```
 ---
-##### 3，常用的操作
-- 3-1 撤销对工作区中文件的修改
-  - 3-1-1 修改，但没有使用git add将修改添加到暂存区
+
+##### 3，常用选项
+- `-f` --force：强制
+- `-d` --delete：删除
+- `-D` --delete --force
+- `-m` --move：移动或重命名
+- `-M` --move --force
+- `-r` --remote：远程
+- `-a` --all：所有
+
+##### 4，常用的操作
+- 4-1 撤销对工作区中文件的修改
+  - 4-1-1 修改，但没有使用git add将修改添加到暂存区
   ```
   $ git checkout --文件
   # 本地所有修改，没有提交的都返回到原来的状态
@@ -332,7 +355,7 @@ $ git archive
   # 将所有没提交的修改暂存到stash中，可用git stash pop恢复
   $ git stash
   ```
-  - 3-1-2 修改，已经使用git add将修改添加到暂存区
+  - 4-1-2 修改，已经使用git add将修改添加到暂存区
   ```
   # 先撤销缓存区的修改，再撤销工作区修改
   $ git reset HEAD --文件
@@ -342,7 +365,7 @@ $ git archive
   # 返回到某个节点，保留修改
   $ git reset --soft HEAD
   ```
-  - 3-1-3 修改，已经使用git add将修改添加到暂存区，并再次进行修改
+  - 4-1-3 修改，已经使用git add将修改添加到暂存区，并再次进行修改
   ```
   # 先撤销工作区修改，再撤销缓存区的修改，再撤销工作区修改
   $ git checkout --文件
@@ -350,7 +373,7 @@ $ git archive
   $ git checkout --文件
   ```
   - 总结：`$ git checkout --文件`撤销工作区文件修改，`$ git reset HEAD --文件`撤销暂存区中文件的修改
-- 3-2 撤销commit但没有push的代码
+- 4-2 撤销commit但没有push的代码
   ```
   # 找到之前提交的git commit的id
   $ git log
@@ -361,9 +384,22 @@ $ git archive
   # 完成撤销，停留在当前版本，不对代码修改进行撤销，可用直接commit或者重新修改代码
   $ git reset [commit-id]
   ```
-- 3-3 修改.gitignore文件后，重新追踪文件
+- 4-3 修改.gitignore文件后，重新追踪文件
   ```
   $ git rm -r --cached .
   $ git add .
   $ git commit -m 'update .gitignore'
+  ```
+- 4-3 清空工程
+  ```
+  $ git rm -rf .
+  ```
+- 4-4 每隔X秒运行一次git pull
+  ```
+  $ for((i=1;i<=10000;i+=1)); do sleep X && git pull; done
+  ```
+- 4-5 使用git rebase将一个feature分支变基到master分支
+  ```
+  $ git checkout feature
+  $ git rebase master
   ```
