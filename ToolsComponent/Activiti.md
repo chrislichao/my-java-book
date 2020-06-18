@@ -85,8 +85,14 @@
 ---
 ##### 4，相关代码
 ```java
+// 得到流程引擎
+ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
+
+// 得到流程部署Service
+RepositoryService repositoryService = processEngine.getRepositoryService();
+
 // 部署流程定义1
-Deployment deploy = respositoryService.createDeployment()
+Deployment deploy = repositoryService.createDeployment()
 .name("请假流程001")
 .addClasspathResource("HelloWorld.bpmn")
 .addClasspathResource("HelloWorld.png").deploy();
@@ -95,15 +101,15 @@ Deployment deploy = respositoryService.createDeployment()
 // 修改流程图后重新部署，只要key不变，它的版本号会+1
 InputStream stream = this.getClass().getResourceAsStream("/HelloWorld.zip");
 ZipInputStream zipInputStream = new ZipInputStream(stream);
-Deployment deploy = respositoryService.createDeployment()
+Deployment deploy = repositoryService.createDeployment()
 .name("请假流程001")
 .addZipInputStream(zipInputStream).deploy();
 
 // 查询流程部署
-respositoryService.createDeploymentQuery().deploymentId(id).orderByDeploymentId().asc().list();
-respositoryService.createDeploymentQuery().deploymentName(name).listPage(firstResult, maxResults);
-respositoryService.createDeploymentQuery().deploymentNameLike(nameLike).singleResult();
-respositoryService.createDeploymentQuery().deploymentNameLike(nameLike).count();
+repositoryService.createDeploymentQuery().deploymentId(id).orderByDeploymentId().asc().list();
+repositoryService.createDeploymentQuery().deploymentName(name).listPage(firstResult, maxResults);
+repositoryService.createDeploymentQuery().deploymentNameLike(nameLike).singleResult();
+repositoryService.createDeploymentQuery().deploymentNameLike(nameLike).count();
 
 // 删除流程定义
 repositoryService.deleteDeployment(deploymentId);
@@ -143,3 +149,63 @@ taskService.complete(taskId, variables);
 // 查询历史任务
 historyService.createHistoricTaskInstanceQuery().list();
 ```
+##### 5，重要术语
+- 流程变量：流程变量在整个工作流中扮演很重要的角色，如请假流程中的请假天数，请假原因等参数都为流程变量的范围，流程变量的作用域只对应一个流程实例，每个流程实例的流程变量互不影响，流程实例结束后，流程变量还保存在数据库中。
+  - 存在的形式：key + value
+  - 支持的数据类型：string，short，int，long，double，boolean，binary，date，serializable（存放自定义对象）
+  - setVariable和setVariableLocal的区别：
+    - setVariable：如果流程变量名称相同，后一次的值将覆盖前一次的值
+    - setVariableLocal：针对活动节点来设置流程变量，两个活动节点设置同一个流程变量，不会覆盖，而且会有TASK_ID字段赋值
+- 连线【SequenceFlow】
+  - 场景：员工的需求申请，部门经理审批时，点击不同的按钮决定不同的走向，重要，需要总经理审批，不重要则直接结束流程
+  - 在sequenceFlow上增加属性：condition="${outcome=='重要'}"，condition="${outcome=='不重要'}"
+- 排他网关【ExclusiveGateway】
+  - 可以理解为java的if - else if - else ，使用流程变量决定流程下一步要选择的路径，也称异或网关，基于数据的排他网关，用于为流程中的决策建模
+  - 场景：费用报销申请，报销费用低于500财务审批，报销费用大于等于500小于1000部门经理审批，报销费用大于等于1000总经理审批
+  - 使用排他网关，并连接三条出口线，分别在sequenceFlow上增加属性：condition="$(money<500)"，condition="$(money>=500&&money<1000)"，condition="$(money>=1000)"
+- 并行网关【ParallelGateway】
+  - 场景：购物流程，买家付款 - 卖家收款 和 卖家发货 - 卖家收货 是两个并行流程
+  - 并行网关分开后最终还要汇合，并行网关进入和外出都是使用相同的节点标识
+  - 一个流程中，只有一个流程实例，但是可能有多个执行实例
+  - 如果同一个并行网关有多个进入和多个外出顺序流，则它可以同时具有分支和汇聚功能
+  - 并行网关不会解析条件，即使定义了条件也会被忽略
+- 接收任务【ReceiveTask】
+  - 接受任务是一个简单任务，它会等待对应消息到达，当流程达到接受任务，流程状态会保存到数据库中，在任务创建后，意味着流程进入等待状态，直到引擎接收了一个特定的消息，才会触发流程穿过接收任务继续执行
+  - 场景：每天统计报表，发短信给总经理
+  ```java
+  runtimeService.setVariable(executionId, "当前销售额", 10000);
+  // 向后执行一步，如果流程处于等待状态，流程继续执行
+  runtimeService.signal(executionId);
+  ```
+- 个人任务
+  - 指定处理人的三种方式：
+    - 直接写死办理人
+    - 通过流程变量，节点向下走时动态指定办理人
+    - 使用任务监听器（taskListener）
+- 组任务
+  - 不是设置办理人，而是设置参与者和候选者
+  - 任务需要先被候选者拾取才可以办理，拾取完成后就变成个人任务了
+  ```java
+  taskService.createTaskQuery().taskCandidateUser("小A").list();
+  taskService.claim(taskId, "小A");// 任务拾取
+  taskService.setAssignee(taskId, null);// 任务回退
+  List<IdentityLink> list =  taskService.getIdentityLinksForTask(taskId);// 查询任务成员
+  identityLink.getType();
+  taskService.addCandidateUser(taskId, userId);
+  taskService.deleteCandidateUser(taskId, userId);
+  ```
+  - 指定处理人的三种方式：
+    - 直接写死参与者和候选者
+    - 启动流程时，通过流程变量，动态指定参与者和候选者
+    - 使用任务监听器（taskListener）指定参与者和候选者
+- 用户和用户组
+  - 几乎不用，一般无法满足实际业务需求
+  ```java
+  identityService.saveGroup(new GroupEntity("部门经理"));
+  identityService.saveGroup(new GroupEntity("总经理"));
+  identityService.saveUser(new UserEntity("小明"));
+  identityService.saveUser(new UserEntity("小张"));
+  identityService.createMembership("小明", "部门经理");
+  identityService.createMembership("小张", "总经理");
+  ```
+  
