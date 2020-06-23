@@ -162,7 +162,7 @@ historyService.createHistoricTaskInstanceQuery().list();
 - 排他网关【ExclusiveGateway】
   - 可以理解为java的if - else if - else ，使用流程变量决定流程下一步要选择的路径，也称异或网关，基于数据的排他网关，用于为流程中的决策建模
   - 场景：费用报销申请，报销费用低于500财务审批，报销费用大于等于500小于1000部门经理审批，报销费用大于等于1000总经理审批
-  - 使用排他网关，并连接三条出口线，分别在sequenceFlow上增加属性：condition="$(money<500)"，condition="$(money>=500&&money<1000)"，condition="$(money>=1000)"
+  - 使用排他网关，并连接三条出口线，分别在sequenceFlow上增加属性：condition="${money<500}"，condition="${money>=500&&money<1000}"，condition="${money>=1000}"
 - 并行网关【ParallelGateway】
   - 场景：购物流程，买家付款 - 卖家收款 和 卖家发货 - 卖家收货 是两个并行流程
   - 并行网关分开后最终还要汇合，并行网关进入和外出都是使用相同的节点标识
