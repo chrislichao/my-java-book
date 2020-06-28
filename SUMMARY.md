@@ -7,6 +7,8 @@
 * [Java基础](JavaFoundation/README.md)
     * [命名规范](JavaFoundation/Naming.md)
     * [JVM](JavaFoundation/JVM.md)
+    * [Stream](JavaFoundation/Stream.md)
+    * [Optional](JavaFoundation/Optional.md)
 * [工具组件](ToolsComponent/README.md)
     * [Activiti](ToolsComponent/Activiti.md)
     * [GitBook](ToolsComponent/GitBook.md)
