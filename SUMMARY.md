@@ -4,6 +4,7 @@
 * [开发环境](JavaEnv/README.md)
     * [Git](JavaEnv/Git.md)
     * [Maven](JavaEnv/Maven.md)
+    * [MySQL](JavaEnv/MySQL.md)
 * [Java基础](JavaFoundation/README.md)
     * [命名规范](JavaFoundation/Naming.md)
     * [JVM](JavaFoundation/JVM.md)
