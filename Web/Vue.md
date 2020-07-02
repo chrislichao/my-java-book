@@ -26,6 +26,7 @@ vue init webpack
 - 完成后，执行`npm run dev`测试是否成功：  Your application is running here: http://localhost:8080
 - 访问：http://localhost:8080
 
+- [相关教程]()
 
 - 文件介绍：
   - components：组件
@@ -47,19 +48,19 @@ vue init webpack
   ```
   
   - 发生POST请求
-  ```
-              let postParam = {
-                "param": {
-                    "startPage": 1,
-                    "pageSize": 20
-                }
-            };
-            axios.post('http://localhost:9000/user/getUserVoPageList', postParam)
-                .then(response => {
-                    if (response.status == 200 && response.data.success) {
-                        this.oftenGoods = response.data.datas.list;
-                    }
-                })
-                .catch(error => {
-                });
+  ```javascript
+  let postParam = {
+      "param": {
+          "startPage": 1,
+          "pageSize": 20
+      }
+  };
+  axios.post('http://localhost:9000/user/getUserVoPageList', postParam)
+       .then(response => {
+           if (response.status == 200 && response.data.success {
+               this.oftenGoods = response.data.datas.list;
+           }
+       })
+       .catch(error => {
+       });
   ```
