@@ -64,3 +64,10 @@ vue init webpack
        .catch(error => {
        });
   ```
+  
+  - 项目打包和上线
+    - 1，将绝对路径改为相对路径
+      - config/index.js中有一个build属性，里面是打包的基本配置
+      - 可以修改打包目录，打包文件名
+      - 一定要把绝对路径改为相对路径：`assetsPublicPath:'./'`
+    - 2，命令行中使用`npm run build`进行打包
