@@ -209,3 +209,6 @@ historyService.createHistoricTaskInstanceQuery().list();
   identityService.createMembership("小张", "总经理");
   ```
   
+##### 6，其他内容
+- 流程创建后，如果不部署，仅ACT_RE_MODEL表中存在数据；
+- 流程部署后，ACT_RE_DEPLOYMENT，ACT_RE_PROCDEF表中才存在数据；
