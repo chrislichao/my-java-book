@@ -26,7 +26,7 @@ vue init webpack
 - 完成后，执行`npm run dev`测试是否成功：  Your application is running here: http://localhost:8080
 - 访问：http://localhost:8080
 
-- [相关教程]()
+- [相关教程](https://jspang.com/detailed?id=28)
 
 - 文件介绍：
   - components：组件
