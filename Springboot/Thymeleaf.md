@@ -16,8 +16,9 @@
 - 链接表达式`@{}`
   - 使用方法：通过链接表达式`@{}`直接拿到应用路径，然后拼接静态资源路径
 ```html
-<script th:src="@{/webjars/jquery/jquery.js}"></script>
-<link th:href="@{/webjars/bootstrap/css/bootstrap.css}" rel="stylesheet" type="text/css">
+<!-- 路径:resources/static/common/jquery/jquery.js -->
+<script th:src="@{/common/jquery/jquery.js}"></script>
+<link th:href="@{/common/bootstrap/css/bootstrap.css}" rel="stylesheet" type="text/css">
 ```
 - 片段表达式`~{}`
   - `~{viewName}`：表示引入完整页面
