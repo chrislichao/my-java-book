@@ -20,7 +20,7 @@
     - Translation
     - VisualVM Launcher
     - Rainbow Brackets
-- Node
+- Nodejs
   - [官网下载地址](https://nodejs.org/en/download/)
 - Webstorm
   - [官网下载地址](https://www.jetbrains.com/webstorm/)

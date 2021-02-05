@@ -4,7 +4,7 @@
 - 开发工具：Webstorm
 - 项目名称：vue-demo
 - 前置操作：
-  - 安装cnpm
+  - 安装cnpm（node package manager）
   - 安装vue脚手架：`cnpm install vue-cli -g`
 - 命令行进入项目路径下，执行指令：
 ```
