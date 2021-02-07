@@ -30,27 +30,7 @@ npm config set cache "C:\MySoft\nodejs\node_cache"
 - 配置NODE_PATH：C:\MySoft\nodejs\node_global\node_modules
 - path：path + %NODE_HOME%
 
-##### 4，安装组件
-- 安装express
-```shell
-# -g”表示安装到global目录下
-npm install express -g
-```
-
-- 重启cmd，验证express是否安装成功
-```shell
-node
-> require('express')
-```
-
-- 安装cnpm
-```shell
-npm install -g cnpm --registry=https://registry.npm.taobao.org
-```
-
-- 修改path路径：path = path + %NODE_HOME%\node_global
-
-##### 5，运行第一个js代码
+##### 4，运行第一个js代码
 - 编写js文件（C:\ChrisLi\HelloNodejs.js）
 ```js
 console.log("Hello World");
@@ -59,4 +39,83 @@ console.log("Hello World");
 ```shell
 cd C:\ChrisLi
 node HelloNode.js
+```
+
+##### 5，npm介绍和使用
+- 在Nodejs中，如果需要引入一个框架（如：express），不是直接点击下载，而是使用npm这个包管理工具去下载，启动和运行时都会使用它。用JavaScript（运行在Nodejs上）写的npm，全称是Node Package Manager，目的就是为了集中管理代码包，Nodejs中内置了npm，安装好Nodejs后可以通过`npm -v`指令查看npm版本。
+- npm[官网](https://npmjs.com)在国外，如果要下载包，速度特别慢，所以我们安装淘宝镜像源，安装cnpm
+```shell
+npm install -g cnpm --registry=https://registry.npm.taobao.org
+# 使用
+cnpm install xxx
+```
+##### 6，安装组件
+- 打开项目根目录，打开终端，输入 `npm install 包名`即可安装第三方包
+- 常用命令
+  - 安装包：`npm install 包名`
+  - 删除包：`npm uninstall 包名`
+  - 初始化一个记录包的package.json文件：`npm init`
+  - 一次性安装所有package.json文件中的包：`npm install`
+- package.json类似于Maven中的pom.xml文件
+- 安装express
+```shell
+# -g”表示安装到global目录（C:\MySoft\nodejs\node_global\node_modules）下
+cnpm install express -g
+```
+- 重启cmd，验证express是否安装成功
+```shell
+node
+> require('express')
+```
+- 修改path路径：path = path + %NODE_HOME%\node_global
+##### 7，Nodejs + Express + Mysql
+- 新建项目文件夹（C:\ChrisLi\MyJava\JavaIde\Nodejs_Workspace\node-mysql）
+- 初始化项目配置文件 package.json
+```shell
+npm init
+# 输入项目名称和作者
+package name: node-mysql
+author: chrislichao
+
+# 一路回车，生成好package.json文件
+
+# 安装cors依赖包
+cnpm install cors -g
+```
+- 查看生成的package.json文件
+```json
+{
+  "name": "node-mysql",
+  "version": "1.0.0",
+  "description": "node express mysql",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "chrislichao",
+  "license": "ISC"
+}
+```
+- 新建一个api.js文件用来写接口代码，内容如下：
+```js
+// 导入express
+const express = require('express');
+// 调用express方法实例化一个服务器
+const app = express();
+// 导入cors
+const cors = require('cors');
+// 使用cors支持跨域
+app.use(cors());
+// 调用express的listen()方法开启服务器，端口为9001
+app.listen(9001, function() {
+	console.log('服务器启动完成！');
+});
+// 处理客户端GET请求
+app.get('/banner', function(req, res) {
+	res.send([
+		'https://1.jsp',
+		'https://2.jsp',
+		'https://3.jsp'
+	]);
+});
 ```
